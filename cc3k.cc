@@ -18,8 +18,12 @@
 #include "cell.h"
 using namespace std;
 
+//ends program
 static void finish(int sig);
 
+//calls wgetch(win) to get character input.
+//puts the corresponding string into s
+//returns true if wgetch succeeds, false otherwise 
 bool chstr(WINDOW *win, string &s);
 
 int main(int argc, char *argv[]) {
@@ -27,6 +31,8 @@ int main(int argc, char *argv[]) {
     initscr();
     
     start_color();
+
+    //Colours for phoenix fire
     init_pair(1, COLOR_YELLOW, COLOR_RED);
     init_pair(2, COLOR_RED, COLOR_YELLOW);
 
@@ -40,11 +46,11 @@ int main(int argc, char *argv[]) {
         
     wattron(win, A_BOLD);
 
-    srand(time(NULL));  //1406223664
+    srand(time(NULL));  //1406223664 for testing
     bool done=false;
     while (!done) {
         
-        ifstream floorList("levels/floorLst1.txt");
+        ifstream floorList("levels/floorLst1.txt"); //default floor plan
         
         //if (argc==2) ifstream floorList(argv[1]);
         
@@ -53,11 +59,13 @@ int main(int argc, char *argv[]) {
         char ch;
         Map *mainMap;
         vector<string> allFloors;
-
+        
+        //push file names of all maps onto allFloors
         while (floorList>>s) {
             allFloors.push_back(s);
         }
 
+        //randomly shuffle the contents of allFloors
         for (int i=0; i<allFloors.size(); i++) {
             int randID = rand()%(allFloors.size()-i)+i;
 
@@ -66,10 +74,12 @@ int main(int argc, char *argv[]) {
             allFloors[i] = temp;
         }
 
+        
         if (allFloors.size()>0) { 
             ifstream floor1(allFloors[0].c_str());
             mainMap = Map::getInstance();
             
+            //Player race selection menu
             do {
                 werase(win);
                 mvwaddstr(win,12,20,"Select race: (h)uman (e)lf (d)warf (o)rk");
@@ -85,16 +95,19 @@ int main(int argc, char *argv[]) {
             else if (ch=='o') pc = new Ork(0, 0, mainMap);
             else pc = new Human(0, 0, mainMap); 
 
+            //generates mainMap based on floor1, maps should be in levels directory
             mainMap->genMap(floor1,pc);
 
-            mainMap->displayBoard(win);
-            pc->playerInfo(win);
-            mainMap->actionInfo(win);
-            wrefresh(win);
+            //Display Screen
+            mainMap->displayBoard(win); //the map
+            pc->playerInfo(win);        //Player Status
+            mainMap->actionInfo(win);   //Describes actions
+            wrefresh(win);              
             
             if (ch=='Q') s="q";
 
             while (s!="q" && s!="r" && chstr(win,s) && s!="q" && s!="r") {
+                // player action and npc action loop
                 while (s!="q" && s!="r" && !pc->action(s)) {
                     mainMap->displayBoard(win);
                     pc->playerInfo(win);

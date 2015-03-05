@@ -11,7 +11,7 @@ GameObject::GameObject(int row, int column, Map *mp, char sym, string name):
     name(name) {}
 
 GameObject::~GameObject() {
-}    //doesn't delete mp, mp destructor called before GO destructor
+}    //doesn't delete mp, mp destructor called before GameObject destructor
 
 bool GameObject::setDir(int &r, int &c, string dir) {
     
