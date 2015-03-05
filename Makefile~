@@ -1,0 +1,12 @@
+CXX=g++
+XXFLAGS=-Wall -MMD
+EXEC=main
+OBJECTS=main.o map.o displaymap.o chamber.o gameobject.o cell.o floor.o wall.o passage.o door.o stair.o character.o potion.o restorehealth.o poison.o boostatk.o woundatk.o boostdef.o wounddef.o player.o human.o elf.o dwarf.o ork.o npc.o goblin.o vampire.o werewolf.o troll.o phoenix.o merchant.o treasure.o
+DEPENDS=${OBJECTS:.o=.d}
+
+${EXEC}: ${OBJECTS}
+	${CXX} ${XXFLAGS} ${OBJECTS} -o ${EXEC}
+-include ${DEPENDS}
+
+clean:
+	rm ${OBJECTS} ${EXEC}
